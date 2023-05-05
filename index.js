@@ -15,9 +15,21 @@ app.get("/", (req, res) => {
     res.send('Welcome To Doctors Portal Server');
 });
 
-app.post('/register', (req, res) => {
-    console.log(req.body);
+app.get('/register', (req, res) => {
+    const { name, email } = req.headers;
 
+    const user = { name, email }
+
+    const token = jwt.sign(user, process.env.token, { expiresIn: 3600 });
+
+    res.send({ token })
+})
+
+app.get("/user", (req, res) => {
+    const { token } = req.headers;
+
+    const user = jwt.decode(token)
+    res.send(user)
 })
 
 app.listen(port, () => console.log(`listening on port: ${port}`))
